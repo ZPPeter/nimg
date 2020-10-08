@@ -15,7 +15,7 @@ declare namespace nimg {
         fill(color:string) : Image;
         fill(r : number, g : number, b : number, a : number) : Image;
         crop(x : number, y : number, w : number, h : number) : Image;
-        draw(img : Image, x : number, y : number, op : CompositeOperator = CompositeOperator.InCompositeOp) : Image;
+        draw(img : Image, x : number, y : number, op : CompositeOperator = CompositeOperator.OverCompositeOp) : Image;
         resize(w : number, h : number) : Image;
         rotate(degree: number) : Image;
     }

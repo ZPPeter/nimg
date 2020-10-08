@@ -25,5 +25,5 @@ write(img, "out3.png")
 
 
 img = img.fill(255,0,0,255)
-img = ori.draw(img, 50,50, nimg.CompositeOperator.InCompositeOp)
+img = ori.draw(img, 50,50,  nimg.CompositeOperator.OverCompositeOp)
 write(img, "out4.png")

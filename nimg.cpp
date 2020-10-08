@@ -134,7 +134,7 @@ public:
         int x = info[1].As<Napi::Number>().Int32Value();
         int y = info[2].As<Napi::Number>().Int32Value();
         
-        int op = InCompositeOp;
+        int op = OverCompositeOp;
         if (info.Length() == 4) {
             op = info[3].ToNumber().Int32Value();
         }

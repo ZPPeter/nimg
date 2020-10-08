@@ -24,7 +24,7 @@ class Image {
     fill(color:string) : Image;
     fill(r : number, g : number, b : number, a : number) : Image;
     crop(x : number, y : number, w : number, h : number) : Image;
-    draw(img : Image, x : number, y : number, op = InCompositeOp) : Image;
+    draw(img : Image, x : number, y : number, op = OverCompositeOp) : Image;
     resize(w : number, h : number) : Image;
     rotate(degree: number) : Image;
 }
