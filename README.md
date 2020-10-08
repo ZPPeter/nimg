@@ -1,6 +1,6 @@
 # nimg
 
-Cross-platform image decoder and encoder for Node.js
+Cross-platform image decoder and encoder for Node.js.<br>
 Node.js轻量级跨平台图像编解码库
 
 Features
@@ -11,7 +11,7 @@ Features
   * 简单易用
 
 Useage
-```
+```typescript
 class Image {
     constructor()
     constructor(w : number, h : number)
