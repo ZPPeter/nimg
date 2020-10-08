@@ -1,0 +1,32 @@
+{
+  "name": "nimg",
+  "version": "1.0.0",
+  "description": "Cross-platform image decoder and encoder for Node.js",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "install": "cmake-js compile",
+    "test": "node test/test.js"
+  },
+  "devDependencies": {
+    "cmake-js": "^6.1.0"
+  },
+  "keywords": [
+    "image",
+    "decoder",
+    "encoder",
+    "webp",
+    "png",
+    "jpeg",
+    "gif",
+    "cross-platform",
+    "sharp",
+    "canvas",
+    "images"
+  ],
+  "author": "qcdong",
+  "license": "MIT",
+  "dependencies": {
+    "node-addon-api": "^3.0.2"
+  }
+}
