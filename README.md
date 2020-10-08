@@ -10,7 +10,7 @@ Features
   * Easy to use
   * 简单易用
 
-Useage
+### Useage
 ```typescript
 class Image {
     constructor()
@@ -29,3 +29,9 @@ class Image {
     rotate(degree: number) : Image;
 }
 ```
+
+### Install
+
+
+  * [Install ImageMagick](https://imagemagick.org/script/download.php)
+  * npm install nimg
