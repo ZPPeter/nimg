@@ -35,3 +35,7 @@ class Image {
 
   * [Install ImageMagick](https://imagemagick.org/script/download.php)
   * npm install nimg
+
+### Github
+
+  * [Github](https://github.com/qcdong2016/nimg)
