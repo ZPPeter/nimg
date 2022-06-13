@@ -20,11 +20,11 @@ class Image {
 
     width(): number;
     height(): number;
-    toBuffer(magic:string = "PNG") : Buffer;
+    toBuffer() : Buffer; // png buffer
     fill(color:string) : Image;
     fill(r : number, g : number, b : number, a : number) : Image;
     crop(x : number, y : number, w : number, h : number) : Image;
-    draw(img : Image, x : number, y : number, op = OverCompositeOp) : Image;
+    draw(img : Image, x : number, y : number) : Image;
     resize(w : number, h : number) : Image;
     rotate(degree: number) : Image;
 }

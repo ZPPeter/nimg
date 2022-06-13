@@ -5,7 +5,8 @@
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
-    "install": "cmake-js compile",
+    "install-cmake": "cmake-js compile",
+    "install": "node-gyp rebuild",
     "test": "node test/test.js"
   },
   "devDependencies": {
@@ -27,6 +28,6 @@
   "author": "qcdong",
   "license": "MIT",
   "dependencies": {
-    "node-addon-api": "^3.0.2"
+    "node-addon-api": "^3.2.1"
   }
 }

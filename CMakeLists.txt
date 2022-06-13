@@ -24,6 +24,7 @@ include_directories(
     ${pwd}
     ${CMAKE_JS_INC} 
     ${ImageMagick_Magick++_INCLUDE_DIRS}
+    ${pwd}/lib
     ${NODE_ADDON_API_DIR}
 )
 add_definitions(
