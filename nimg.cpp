@@ -4,12 +4,9 @@
 #include <napi.h>
 
 #define cimg_display 0
-#include "cimg/CImg.h"
-
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb/stb_image.h"
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "stb/stb_image_write.h"
+#define cimg_use_png 1
+#define cimg_use_jpeg 1
+#include "lib/cimg/CImg.h"
 
 typedef cimg_library::CImg<unsigned char> Image;
 
@@ -18,49 +15,40 @@ Napi::FunctionReference constructor;
 class NodeImage : public Napi::ObjectWrap<NodeImage>
 {
 public:
+    Image *_image = nullptr;
+
     NodeImage(const Napi::CallbackInfo &info) : Napi::ObjectWrap<NodeImage>(info)
     {
-        Napi::Error err;
-
         if (info.Length() == 0)
-        {
             return;
-        }
-        else if (info.Length() == 1)
+
+        if (info.Length() == 1)
         {
-            if (info[0].IsBuffer())
+            if (info[0].IsString())
             {
-                auto buffer = info[0].As<Napi::Buffer<uint8_t>>();
-                this->initWithBuffer(buffer);
+                std::string s = info[0].As<Napi::String>();
+                this->_image = new Image(s.c_str());
             }
             else if (info[0].IsObject() && info[0].ToObject().InstanceOf(constructor.Value()))
             {
                 auto img = Unwrap(info[0].As<Napi::Object>());
-                this->initWithImage(img);
+                this->_image = new Image(*img->_image);
             }
             else
             {
-                err = Napi::Error::New(info.Env(), "argument error.");
+                throw Napi::Error::New(info.Env(), "argument error.");
             }
         }
         else if (info.Length() == 2)
         {
             int w = info[0].As<Napi::Number>().Int32Value();
             int h = info[1].As<Napi::Number>().Int32Value();
-            this->initWithWH(w, h);
+
+            this->_image = new Image(w, h, 1, 4, 0);
         }
         else
         {
-            err = Napi::Error::New(info.Env(), "argument error.");
-        }
-
-        if (!err.IsEmpty())
-        {
-#ifdef NAPI_DISABLE_CPP_EXCEPTIONS
-            error.ThrowAsJavaScriptException();
-#else
-            throw err;
-#endif // NAPI_DISABLE_CPP_EXCEPTIONS
+            throw Napi::Error::New(info.Env(), "argument error.");
         }
     }
 
@@ -72,58 +60,24 @@ public:
         }
     }
 
-    Image *_image = {nullptr};
-    void initWithImage(NodeImage *img)
-    {
-        this->_image = new Image(*img->_image);
-    }
-
-    void initWithWH(int w, int h)
-    {
-        this->_image = new Image(nullptr, w, h, 1, 4, false);
-    }
-
-    void initWithBuffer(Napi::Buffer<uint8_t> buffer)
-    {
-        int w, h, comp;
-        stbi_uc *data = stbi_load_from_memory(buffer.Data(), buffer.Length(), &w, &h, &comp, 0);
-        this->_image = new Image(data, w, h, comp, false);
-    }
-
     Napi::Value width(const Napi::CallbackInfo &info)
     {
-        int width = this->_image->width();
-
-        return Napi::Number::New(info.Env(), width);
+        return Napi::Number::New(info.Env(), _image->width());
     }
 
     Napi::Value height(const Napi::CallbackInfo &info)
     {
-        int height = this->_image->height();
-
-        return Napi::Number::New(info.Env(), height);
-    }
-
-    Napi::Value fill(const Napi::CallbackInfo &info)
-    {
-
-        auto r = (unsigned char)info[0].As<Napi::Number>().DoubleValue();
-        auto g = (unsigned char)info[1].As<Napi::Number>().DoubleValue();
-        auto b = (unsigned char)info[2].As<Napi::Number>().DoubleValue();
-        auto a = (unsigned char)info[3].As<Napi::Number>().DoubleValue();
-
-        return wrap(_image->fill(r, g, b, a));
+        return Napi::Number::New(info.Env(), _image->height());
     }
 
     Napi::Value crop(const Napi::CallbackInfo &info)
     {
-
         int x = info[0].As<Napi::Number>().Int32Value();
         int y = info[1].As<Napi::Number>().Int32Value();
         int w = info[2].As<Napi::Number>().Int32Value();
         int h = info[3].As<Napi::Number>().Int32Value();
 
-        return wrap(_image->crop(x, y, x + w, y + h));
+        return wrap(_image->crop(x, y, x + w - 1, y + h - 1));
     }
 
     Napi::Value rotate(const Napi::CallbackInfo &info)
@@ -149,31 +103,26 @@ public:
         return wrap(_image->draw_image(x, y, *other->_image));
     }
 
-    Napi::Value toBuffer(const Napi::CallbackInfo &info)
+    Napi::Value save(const Napi::CallbackInfo &info)
     {
-
+        std::string path = info[0].As<Napi::String>();
         std::string magic = "PNG";
 
-        if (info.Length() == 1 && info[0].IsString())
+        if (info.Length() == 2)
         {
-            magic = info[0].ToString();
+            magic = info[1].As<Napi::String>();
         }
 
-        unsigned char *out;
-        int size;
         if (magic == "PNG")
         {
-            out = stbi_write_png_to_mem(_image->data(), 0, _image->width(), _image->height(), _image->depth(), &size);
+            _image->save_png(path.c_str());
         }
         else if (magic == "JPG")
         {
-            //            out = stbi_write_jpg_to_mem(_image->data(), 0, _image->width(), _image->height(), _image->depth(), &size);
+            _image->save_jpeg(path.c_str());
         }
 
-        auto buf = Napi::Buffer<uint8_t>::Copy(info.Env(), (uint8_t *)out, size);
-        STBIW_FREE(out);
-
-        return buf;
+        return Napi::Value();
     }
 
     static Napi::Value wrap(const Image &img)
@@ -192,8 +141,7 @@ public:
                                           {
                                               InstanceMethod("width", &NodeImage::width),
                                               InstanceMethod("height", &NodeImage::height),
-                                              InstanceMethod("toBuffer", &NodeImage::toBuffer),
-                                              InstanceMethod("fill", &NodeImage::fill),
+                                              InstanceMethod("save", &NodeImage::save),
                                               InstanceMethod("crop", &NodeImage::crop),
                                               InstanceMethod("draw", &NodeImage::draw),
                                               InstanceMethod("resize", &NodeImage::resize),

@@ -1,0 +1,7 @@
+{
+	"files.associations": {
+		"*.as": "csharp",
+		"__locale": "cpp",
+		"ios": "cpp"
+	}
+}

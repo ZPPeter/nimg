@@ -5,8 +5,7 @@
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
-    "install-cmake": "cmake-js compile",
-    "install": "node-gyp rebuild",
+    "install": "cmake-js compile",
     "test": "node test/test.js"
   },
   "keywords": [
