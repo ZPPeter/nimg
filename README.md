@@ -5,8 +5,8 @@ Node.js轻量级跨平台图像编解码库
 
 Features
 
-  * Base on [CMake](https://cmake.org/) + [node-addon-api](https://github.com/nodejs/node-addon-api) + [Magick++](http://www.imagemagick.org/Magick++/)
-  * 基于[CMake](https://cmake.org/) + [node-addon-api](https://github.com/nodejs/node-addon-api) + [Magick++](http://www.imagemagick.org/Magick++/), 可靠，且易于扩展
+  * Base on [CMake](https://cmake.org/) + [node-addon-api](https://github.com/nodejs/node-addon-api) + [CImg](https://github.com/dtschump/CImg)
+  * 基于[CMake](https://cmake.org/) + [node-addon-api](https://github.com/nodejs/node-addon-api) + [CImg](https://github.com/dtschump/CImg), 可靠，且易于扩展
   * Easy to use
   * 简单易用
 
@@ -32,8 +32,8 @@ class Image {
 
 ### Install
 
-
-  * [Install ImageMagick](https://imagemagick.org/script/download.php)
+  * install cmake
+  * install cmake-js
   * npm install nimg
 
 ### Github
